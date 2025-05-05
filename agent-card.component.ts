@@ -1,13 +1,14 @@
 import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { Agent } from '../../models/agent.model';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-agent-card',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   template: `
-    <div class="agent-card slide-up">
+    <div class="agent-card slide-up" [routerLink]="['/agent', agent.id]">
       <div class="agent-card-header">
         <h3>{{ agent.name }}</h3>
         <span class="agent-model">{{ agent.model }}</span>
@@ -15,7 +16,7 @@ import { CommonModule } from '@angular/common';
       <p class="agent-prompt">{{ truncatePrompt(agent.systemPrompt) }}</p>
       <div class="agent-footer">
         <span class="agent-date">Created {{ formatDate(agent.createdAt) }}</span>
-        <button class="delete-button" (click)="onDelete.emit(agent.id)">Delete</button>
+        <button class="delete-button" (click)="onDeleteClick($event)">Delete</button>
       </div>
     </div>
   `,
@@ -29,6 +30,7 @@ import { CommonModule } from '@angular/common';
       height: 100%;
       display: flex;
       flex-direction: column;
+      cursor: pointer;
     }
     
     .agent-card:hover {
@@ -106,5 +108,11 @@ export class AgentCardComponent {
     } else {
       return new Date(date).toLocaleDateString();
     }
+  }
+
+  onDeleteClick(event: Event) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.onDelete.emit(this.agent.id);
   }
 }
