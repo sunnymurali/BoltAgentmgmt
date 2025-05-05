@@ -51,7 +51,7 @@ import { Agent } from '../../models/agent.model';
         <div class="chat-input">
           <textarea
             [(ngModel)]="currentMessage"
-            (keydown.enter)="sendMessage($event as KeyboardEvent)"
+            (keydown.enter)="sendMessage($event)"
             placeholder="Type your message..."
             rows="3"
           ></textarea>
@@ -260,3 +260,34 @@ export class AgentChatComponent implements OnInit {
     event.preventDefault();
     event.stopPropagation();
     const dropZone = event.target as HTMLElement;
+    dropZone.classList.add('drag-over');
+  }
+
+  onDrop(event: DragEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    const dropZone = event.target as HTMLElement;
+    dropZone.classList.remove('drag-over');
+    const files = event.dataTransfer?.files;
+    if (files) {
+      this.handleFiles(files);
+    }
+  }
+
+  removeDocument(doc: {name: string, content: string}) {
+    this.documents = this.documents.filter(d => d !== doc);
+  }
+
+  private handleFiles(files: FileList) {
+    Array.from(files).forEach(file => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.documents.push({
+          name: file.name,
+          content: e.target?.result as string
+        });
+      };
+      reader.readAsText(file);
+    });
+  }
+}
