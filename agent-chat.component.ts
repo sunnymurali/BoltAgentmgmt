@@ -220,7 +220,7 @@ export class AgentChatComponent implements OnInit {
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
-      this.agentService.getAgents().subscribe(agents => {
+      this.agentService.getAgents().subscribe((agents: Agent[]) => {
         this.agent = agents.find(a => a.id === id);
       });
     }
