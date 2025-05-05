@@ -226,8 +226,11 @@ export class AgentChatComponent implements OnInit {
     }
   }
 
-  sendMessage(event?: KeyboardEvent) {
+  sendMessage(event?: Event) {
     if (event) {
+      if ((event as KeyboardEvent).key !== 'Enter') {
+        return;
+      }
       event.preventDefault();
     }
     
